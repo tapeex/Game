@@ -94,3 +94,8 @@ void Player::Update(float time, float speed, RenderWindow& window)
 		if (slidesOfExploding >= 13) isDead = true;
 	}
 }
+
+void Player::SpeedUpShooting()
+{
+	timeBetweenShots -= 10;
+}

@@ -20,9 +20,9 @@ public:
 	int GetWidth();
 	int GetHeight();
 	int GetTimeBetweenShots();
+	void SpeedUpShooting();
 	Sprite GetSprite();
 	void Update(float time, float speed, RenderWindow &window);
-
 	Animation explode;
 };
 

@@ -2,8 +2,8 @@
 
 Laser::Laser(float X, float Y, short direction) : explode("ex.png", 0, 0, 50, 50, 1, 12, 20)
 {
-    texture.loadFromFile("images/HeroSprite2.png");
-    sprite.setTextureRect(IntRect(6, 150, 50, 10));
+    texture.loadFromFile("images/bullets.png");
+    sprite.setTextureRect(IntRect(0, 0, 50, 13));
     dx = 0; dy = 0; speed = 0; direction = 0;
     x = X;
     y = Y+35;

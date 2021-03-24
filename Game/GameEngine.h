@@ -15,9 +15,9 @@ class GameEngine
 	vector<Enemy> enemies;
 	vector<Laser> enemyBullets;
 
-	//Background background;
+	Background background;
 
-	Pause stop;
+	Pause pause;
 
 	Animation shield;
 
@@ -27,6 +27,6 @@ public:
 
 	void AddEnemies(int score, bool &previousIsLine);
 
-	void TimeOperations(float &time, Clock &clock, float& timeBetweenShots, float& timeBetweenEnemies, float& timeBetweenShieldSlides);
+	void TimeOperations(float &time, Clock &clock, float& timeBetweenShots, float& timeBetweenEnemies, float& timeBetweenShieldSlides, float& shieldTime, float& timeBetweenSpeedUping);
 };
 

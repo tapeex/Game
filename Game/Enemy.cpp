@@ -1,6 +1,6 @@
 #include "Enemy.h"
 
-Enemy::Enemy(float X, float Y, int difficulty) : explode("ex.png", 0, 0, 50, 50, 1, 12, 20)
+Enemy::Enemy(float X, float Y, int difficulty) : explode("ex.png", 0, 0, 50, 50, 1, 12, 15)
 {
     texture.loadFromFile("images/enemies.png");
     sprite.setTextureRect(IntRect(0, 0, 100, 100));
@@ -64,7 +64,7 @@ void Enemy::Update(float time, float speed, RenderWindow &window)
 
 	if (exploding && !isDead) {
 		timeBetweenExplodeSlides += time;
-		if (timeBetweenExplodeSlides >= 20) {
+		if (timeBetweenExplodeSlides >= 15) {
 			slidesOfExploding++;
 		}
 		explode.Update(timeBetweenExplodeSlides, window, x, y);

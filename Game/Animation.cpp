@@ -39,8 +39,6 @@ void Animation::Update(float& timeBetweenSlides, RenderWindow & window, float x,
 			sprite.setTextureRect(IntRect(tmpRectLeft, tmpRectTop, rectWidth, rectHeight));
 			timeBetweenSlides = 0;
 		}
-		sprite.setTexture(texture);
-		window.draw(sprite);
 	}
 	else if (reverseLoop) {
 		sprite.setPosition(x - 25, y - 25);
@@ -57,9 +55,9 @@ void Animation::Update(float& timeBetweenSlides, RenderWindow & window, float x,
 			sprite.setTextureRect(IntRect(tmpRectLeft, tmpRectTop, rectWidth, rectHeight));
 			timeBetweenSlides = 0;
 		}
-		sprite.setTexture(texture);
-		window.draw(sprite);
 	}
+	sprite.setTexture(texture);
+	window.draw(sprite);
 }
 
 bool Animation::GetIsEndedWithoutAnyLoop()

@@ -10,12 +10,12 @@ class Background
 	Texture texture;
 	Sprite sprite;
 	float x, y;
-	float timeBetweenSlides;
 	short iterator;
+	float oldPlayerX;
 
 public:
 	Background();
 
-	void Update(float time, float speed, RenderWindow& window);
+	void Update(float time, float playerX, RenderWindow& window);
 };
 
