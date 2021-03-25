@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "Animation.h"
 #include "Pause.h"
+#include "Menu.h"
 #include "Background.h"
 #include <Windows.h>
 #include <vector>
@@ -17,7 +18,8 @@ class GameEngine
 
 	Background background;
 
-	Pause pause;
+	Menu menu;
+	Pause stop;
 
 	Animation shield;
 

@@ -12,7 +12,7 @@ class Player : public Object
 public:
 	Player() = default;
 	Player(String file, float x, float y, short width, short height);
-
+	void clear();
 	void SubtractHP(int damage);
 	int GetHP() { return hp; }
 	float GetX();
