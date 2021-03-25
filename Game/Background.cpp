@@ -9,7 +9,7 @@ Background::Background()
 	sprite.setTextureRect(IntRect(x, y, 550, 850));
 	oldPlayerX = 250;
 } 
-
+ 
 void Background::Update(float time, float playerX, RenderWindow& window)
 {
 	bool changed = false;
