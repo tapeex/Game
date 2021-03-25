@@ -9,124 +9,188 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 	float timeBetweenShots = 0;
 	float timeBetweenEnemies = 0;
 	Event event;
+
 	bool previousIsLine = false;
 	int score = 1;
 	int playerWidth = player.GetWidth();
 	FloatRect playerGlobalBounds;
 	float timeBetweenShieldSlides = 0;
+
 	bool isPause = false;
+	bool isMenu = true;
+
 	bool isShield = false;
 	float shieldTime = 0;
 	float timeBetweenSpeedUping = 0;
 
-	while (window.isOpen()) {
+	while (window.isOpen())
+	{
 		window.pollEvent(event);
 		if (event.type == Event::Closed) break;
 
 		//if (!player.GetIsDead()) {
-			TimeOperations(time, clock, timeBetweenShots, timeBetweenEnemies, timeBetweenShieldSlides, shieldTime, timeBetweenSpeedUping);
-			playerGlobalBounds = player.GetSprite().getGlobalBounds();
-			
-			if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-				if(isPause) Sleep(200);
-				isPause = !isPause;
+		TimeOperations(time, clock, timeBetweenShots, timeBetweenEnemies, timeBetweenShieldSlides, shieldTime, timeBetweenSpeedUping);
+		playerGlobalBounds = player.GetSprite().getGlobalBounds();
 
-				clock.restart();
-				pause.SetPause(window);
-				window.display();
-				if (isPause) Sleep(200);
+
+		if (!isPause && isMenu)
+		{
+
+			if (event.type == Event::MouseButtonPressed && isMenu)
+			{
+				if (event.mouseButton.button == Mouse::Left)
+				{
+					if (event.mouseButton.x >= 165 && event.mouseButton.x <= 380 && event.mouseButton.y >= 390 && event.mouseButton.y <= 460) isMenu = !isMenu;
+					if (event.mouseButton.x >= 165 && event.mouseButton.x <= 380 && event.mouseButton.y >= 500 && event.mouseButton.y <= 570) exit(0);
+				}
 			}
 
-			if (!isPause) {
-				if (timeBetweenEnemies > 1500 - score/100) {
-					AddEnemies(score, previousIsLine);
-					timeBetweenEnemies = 0 + rand() % 500;
-				}
+			window.clear();
+			if (event.type == Event::MouseMoved)menu.SetMenu(window, event.mouseMove.x, event.mouseMove.y);
+			else menu.SetMenu(window, 0, 0);
+			window.display();
+			//cout << "Menu\n";
+		}
 
-				if (Keyboard::isKeyPressed(Keyboard::Space) && timeBetweenShots > player.GetTimeBetweenShots()) {
-					playerBullets.push_back(Laser(player.GetSprite().getPosition().x, player.GetSprite().getPosition().y, 1));
-					timeBetweenShots = 0;
-				}
+		if (Keyboard::isKeyPressed(Keyboard::Escape) && !isMenu)
+		{
+			Sleep(200);
+			isPause = !isPause;
+		}
 
-				if (Keyboard::isKeyPressed(Keyboard::Q) && shieldTime >= 7500) {
-					isShield = true;
-					shieldTime = 0;
-				}
-				if (isShield && shieldTime >= 5000) {
-					isShield = false;
-					shieldTime = 0;
-				}
+		if (isPause && !isMenu)
+		{
 
-				if (timeBetweenSpeedUping >= 1000000 / player.GetTimeBetweenShots() && player.GetTimeBetweenShots() >= 100) {
-					player.SpeedUpShooting();
-					timeBetweenSpeedUping = 0;
-				}
-
-				for (int i = 0; i < playerBullets.size(); i++) {
-					if (playerBullets[i].GetIsDead()) {
-						playerBullets.erase(playerBullets.begin() + i);
-						break;
+			if (event.type == Event::MouseButtonPressed && isPause)
+			{
+				if (event.mouseButton.button == Mouse::Left)
+				{
+					if (event.mouseButton.x >= 165 && event.mouseButton.x <= 380 && event.mouseButton.y >= 390 && event.mouseButton.y <= 460)
+					{
+						isPause = !isPause;
+						playerBullets.clear();
+						enemies.clear();
+						enemyBullets.clear();
+						player.clear();
+						window.clear();
+						Sleep(130);
+					}
+					if (event.mouseButton.x >= 165 && event.mouseButton.x <= 380 && event.mouseButton.y >= 500 && event.mouseButton.y <= 570)
+					{
+						isMenu = !isMenu, isPause = !isPause;
+						playerBullets.clear();
+						enemies.clear();
+						enemyBullets.clear();
+						player.clear();
+						window.clear();
+						Sleep(130);
 					}
 				}
-				for (int i = 0; i < enemies.size(); i++) {
-					if (enemies[i].GetIsDead()) {
-						enemies.erase(enemies.begin() + i);
-						break;
-					}
-				}
-				for (int i = 0; i < enemyBullets.size(); i++) {
-					if (enemyBullets[i].GetIsDead()) {
-						enemyBullets.erase(enemyBullets.begin() + i);
-						break;
-					}
-				}
-
-				window.clear();
-				background.Update(time, player.GetX(), window);
-
-			
-				for (int i = 0; i < playerBullets.size(); i++) {
-					playerBullets[i].Update(time, 1, window);
-					for (int j = 0; j < enemies.size(); j++) {
-						if (playerBullets[i].GetSprite().getGlobalBounds().intersects(enemies[j].GetSprite().getGlobalBounds())) {
-							enemies[j].Explode();
-							playerBullets[i].Kill();
-							score += 100 + score / 200;
-						}
-					}
-				}
-				for (int i = 0; i < enemies.size(); i++) {
-					enemies[i].Update(time, 0.35, window);
-					float enemyX = enemies[i].GetX();
-					float playerX = player.GetX();
-					if (enemyX > playerX - playerWidth && enemyX < playerX + playerWidth && enemies[i].GetTimeBetweenShots() > 1000 && enemies[i].GetY() < player.GetY()) {
-						enemyBullets.push_back(Laser(enemyX, enemies[i].GetY(), -1));
-						enemies[i].SetTimeBetweenShots(0);
-					}
-				}
-				for (int i = 0; i < enemyBullets.size(); i++) {
-					enemyBullets[i].Update(time, -0.5, window);
-					if (enemyBullets[i].GetSprite().getGlobalBounds().intersects(playerGlobalBounds) && !enemyBullets[i].GetIsDead() && !enemyBullets[i].GetExploding()) {
-						if (!isShield) {
-							player.SubtractHP(5);
-						}
-						enemyBullets[i].Explode();
-					}
-				}
-
-				player.Update(time, 1, window);
-
-				if (!player.GetIsDead() && !player.GetExploding() && isShield) {
-					shield.Update(timeBetweenShieldSlides, window, player.GetX() - 25, player.GetY() - 25);
-				}
-				window.display();
-
-
 			}
-		//}
+
+			clock.restart();
+			window.clear();
+
+			if (event.type == Event::MouseMoved) stop.SetPause(window, event.mouseMove.x, event.mouseMove.y, true);
+			else stop.SetPause(window, 0, 0, false);
+
+			window.display();
+			//cout << "Pause\n";
+		}
+	
+		if (!isPause && !isMenu)
+		{
+
+			if (timeBetweenEnemies > 1500 - score / 100) {
+				AddEnemies(score, previousIsLine);
+				timeBetweenEnemies = 0 + rand() % 500;
+			}
+
+			if (Keyboard::isKeyPressed(Keyboard::Space) && timeBetweenShots > player.GetTimeBetweenShots()) {
+				playerBullets.push_back(Laser(player.GetSprite().getPosition().x, player.GetSprite().getPosition().y, 1));
+				timeBetweenShots = 0;
+			}
+
+			if (Keyboard::isKeyPressed(Keyboard::Q) && shieldTime >= 7500) {
+				isShield = true;
+				shieldTime = 0;
+			}
+			if (isShield && shieldTime >= 5000) {
+				isShield = false;
+				shieldTime = 0;
+			}
+
+			if (timeBetweenSpeedUping >= 1000000 / player.GetTimeBetweenShots() && player.GetTimeBetweenShots() >= 100) {
+				player.SpeedUpShooting();
+				timeBetweenSpeedUping = 0;
+			}
+
+			for (int i = 0; i < playerBullets.size(); i++) {
+				if (playerBullets[i].GetIsDead()) {
+					playerBullets.erase(playerBullets.begin() + i);
+					break;
+				}
+			}
+			for (int i = 0; i < enemies.size(); i++) {
+				if (enemies[i].GetIsDead()) {
+					enemies.erase(enemies.begin() + i);
+					break;
+				}
+			}
+			for (int i = 0; i < enemyBullets.size(); i++) {
+				if (enemyBullets[i].GetIsDead()) {
+					enemyBullets.erase(enemyBullets.begin() + i);
+					break;
+				}
+			}
+
+			window.clear();
+			background.Update(time, player.GetX(), window);
+
+
+			for (int i = 0; i < playerBullets.size(); i++) {
+				playerBullets[i].Update(time, 1, window);
+				for (int j = 0; j < enemies.size(); j++) {
+					if (playerBullets[i].GetSprite().getGlobalBounds().intersects(enemies[j].GetSprite().getGlobalBounds())) {
+						enemies[j].Explode();
+						playerBullets[i].Kill();
+						score += 100 + score / 200;
+					}
+				}
+			}
+			for (int i = 0; i < enemies.size(); i++) {
+				enemies[i].Update(time, 0.35, window);
+				float enemyX = enemies[i].GetX();
+				float playerX = player.GetX();
+				if (enemyX > playerX - playerWidth && enemyX < playerX + playerWidth && enemies[i].GetTimeBetweenShots() > 1000 && enemies[i].GetY() < player.GetY()) {
+					enemyBullets.push_back(Laser(enemyX, enemies[i].GetY(), -1));
+					enemies[i].SetTimeBetweenShots(0);
+				}
+			}
+			for (int i = 0; i < enemyBullets.size(); i++) {
+				enemyBullets[i].Update(time, -0.5, window);
+				if (enemyBullets[i].GetSprite().getGlobalBounds().intersects(playerGlobalBounds) && !enemyBullets[i].GetIsDead() && !enemyBullets[i].GetExploding()) {
+					if (!isShield) {
+						player.SubtractHP(5);
+					}
+					enemyBullets[i].Explode();
+				}
+			}
+
+			player.Update(time, 1, window);
+
+			if (!player.GetIsDead() && !player.GetExploding() && isShield) {
+				shield.Update(timeBetweenShieldSlides, window, player.GetX() - 25, player.GetY() - 25);
+			}
+			window.display();
+
+
+		}
 	}
-	//system("cls");
+		//}
 }
+	//system("cls");
+
 
 
 			//unsigned int start_time = std::clock();

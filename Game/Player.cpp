@@ -19,13 +19,28 @@ Player::Player(String file, float X, float Y, short W, short H) : explode("ex.pn
     
     texture.loadFromFile("images/" + file);
     sprite.setTexture(texture);
-    sprite.setTextureRect(IntRect(0, 0, width, height));
+	//sprite.setTextureRect(IntRect(0, 0, width, height)); //Первый герой
+	//sprite.setTextureRect(IntRect(61, 0, width, height));  //Второй герой
+    sprite.setTextureRect(IntRect(111, 0, width, height));  //Третий герой
     //sprite.setScale(0.2, 0.2);
 
 
 	exploding = false;
 	timeBetweenExplodeSlides = 0;
 	slidesOfExploding = 0;
+}
+
+void Player::clear()
+{
+	dx = 0; dy = 0; speed = 0; direction = 0;
+	width = 50;
+	height = 50;
+	x = 250;
+	y = 500;
+	timeBetweenShots = 300;
+	hp = 100;
+	isDead = false;
+	//sprite.setScale(0.2, 0.2);
 }
 
 void Player::SubtractHP(int damage)

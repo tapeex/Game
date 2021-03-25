@@ -6,9 +6,9 @@ using namespace sf;
 
 int main()
 {
-	RenderWindow window(VideoMode(550, 850), "Wellcum", Style::Close); // 550 850
+	RenderWindow window(VideoMode(550, 850), "Game", Style::Close); // 550 850
 	//Player player("HeroSprite.png", 250, 500, 50, 50);
-	Player player("hero1.png", 250, 500, 50, 50);
+	Player player("HeroSptait.png", 250, 500, 50, 50);
 	GameEngine gameEngine(window, player);
 
     //std::vector<int> v;

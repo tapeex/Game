@@ -8,7 +8,7 @@ Enemy::Enemy(float X, float Y, int difficulty) : explode("ex.png", 0, 0, 50, 50,
         case 1:
             sprite.setTextureRect(IntRect(0, 0, 100, 100));
             break;
-        // TODO case 2,3,4,5
+        // TODO case 2,3
         default:
             sprite.setTextureRect(IntRect(0, 0, 50, 50));
             break;

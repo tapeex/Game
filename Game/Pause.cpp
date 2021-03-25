@@ -1,17 +1,21 @@
 #include "Pause.h"
 
-Pause::Pause():play("Buttonplay.png"), restart("Buttonrestart.png")
+Pause::Pause() :exit("Buttonexit.png"), restart("Buttonrestart.png")
 {
-    
     texture.loadFromFile("images/pause.png");
     sprite.setTexture(texture);
 }
 
-void Pause::SetPause(RenderWindow& window)
+void Pause::SetPause(RenderWindow& window, float mouse_x, float mouse_y, bool pressed)
 {
     window.draw(sprite);
-    restart.SetButton(window, 150, 350); //200, 500);
-    play.SetButton(window, 150, 440); //200, 500);
+
+    if (mouse_x >= 165 && mouse_x <= 380 && mouse_y >= 390 && mouse_y <= 460)  restart.SetButton(window, 165, 390, true); //200, 500); 
+    else restart.SetButton(window, 165, 390); //200, 500);
+
+
+    if (mouse_x >= 165 && mouse_x <= 380 && mouse_y >= 500 && mouse_y <= 570)   exit.SetButton(window, 165, 500, true); //200, 500); 
+    else exit.SetButton(window, 165, 500);
 }
 
 Sprite Pause::GetSprite()
