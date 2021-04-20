@@ -182,7 +182,7 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr, bool isPause
 				enemyBullets[i].Update(time, -0.5, window);
 				if (enemyBullets[i].GetSprite().getGlobalBounds().intersects(playerGlobalBounds) && !enemyBullets[i].GetIsDead() && !enemyBullets[i].GetExploding()) {
 					if (!isShield) {
-						player.SubtractHP(50);
+						player.SubtractHP(5);
 					}
 					enemyBullets[i].Explode();
 				}
