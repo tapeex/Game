@@ -25,7 +25,7 @@ class GameEngine
 
 public:
 	GameEngine() = default;
-	GameEngine(RenderWindow& window, const Player& playerr);
+	GameEngine(RenderWindow& window, const Player& playerr, bool isPaused = false);
 
 	void AddEnemies(int score, bool &previousIsLine);
 

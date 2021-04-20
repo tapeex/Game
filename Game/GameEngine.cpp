@@ -2,8 +2,14 @@
 #include <ctime>
 #include <chrono>
 
-GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(playerr), shield("shield2.png", 0, 0, 100, 100, 60, 5, 25, 1)
+GameEngine::GameEngine(RenderWindow& window, const Player& playerr, bool isPaused) : player(playerr), shield("shield2.png", 0, 0, 100, 100, 60, 5, 25, 1)
 {
+	Font font;
+	font.loadFromFile("images/font.otf");
+	Text scoreText("Score", font, 20);
+	RectangleShape healthLine(Vector2f{ 550, 100 });
+
+
 	Clock clock;
 	float time = 0;
 	float timeBetweenShots = 0;
@@ -17,7 +23,7 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 	float timeBetweenShieldSlides = 0;
 
 	bool isPause = false;
-	bool isMenu = true;
+	bool isMenu = !isPaused;
 
 	bool isShield = false;
 	float shieldTime = 0;
@@ -32,6 +38,8 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 		TimeOperations(time, clock, timeBetweenShots, timeBetweenEnemies, timeBetweenShieldSlides, shieldTime, timeBetweenSpeedUping);
 		playerGlobalBounds = player.GetSprite().getGlobalBounds();
 
+		healthLine.setPosition(0, 750);
+		healthLine.setFillColor(Color{ 255, 0, 0, 60 });
 
 		if (!isPause && isMenu)
 		{
@@ -49,7 +57,6 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 			if (event.type == Event::MouseMoved)menu.SetMenu(window, event.mouseMove.x, event.mouseMove.y);
 			else menu.SetMenu(window, 0, 0);
 			window.display();
-			//cout << "Menu\n";
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape) && !isMenu)
@@ -72,18 +79,23 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 						enemies.clear();
 						enemyBullets.clear();
 						player.clear();
+						score = 1;
 						window.clear();
-						Sleep(130);
+						GameEngine(window, player, true);
+						return;
+						//Sleep(130);
 					}
 					if (event.mouseButton.x >= 165 && event.mouseButton.x <= 380 && event.mouseButton.y >= 500 && event.mouseButton.y <= 570)
 					{
-						isMenu = !isMenu, isPause = !isPause;
-						playerBullets.clear();
-						enemies.clear();
-						enemyBullets.clear();
-						player.clear();
-						window.clear();
-						Sleep(130);
+						//isMenu = !isMenu, isPause = !isPause;
+						//playerBullets.clear();
+						//enemies.clear();
+						//enemyBullets.clear();
+						//player.clear();
+						//score = 1;
+						//window.clear();
+						//Sleep(130);
+						break;
 					}
 				}
 			}
@@ -97,10 +109,9 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 			window.display();
 			//cout << "Pause\n";
 		}
-	
+		
 		if (!isPause && !isMenu)
 		{
-
 			if (timeBetweenEnemies > 1500 - score / 100) {
 				AddEnemies(score, previousIsLine);
 				timeBetweenEnemies = 0 + rand() % 500;
@@ -171,17 +182,32 @@ GameEngine::GameEngine(RenderWindow& window, const Player& playerr) : player(pla
 				enemyBullets[i].Update(time, -0.5, window);
 				if (enemyBullets[i].GetSprite().getGlobalBounds().intersects(playerGlobalBounds) && !enemyBullets[i].GetIsDead() && !enemyBullets[i].GetExploding()) {
 					if (!isShield) {
-						player.SubtractHP(5);
+						player.SubtractHP(50);
 					}
 					enemyBullets[i].Explode();
 				}
 			}
 
 			player.Update(time, 1, window);
+			if (player.GetIsDead()) {
+				//isPause = true;
+			}
 
 			if (!player.GetIsDead() && !player.GetExploding() && isShield) {
 				shield.Update(timeBetweenShieldSlides, window, player.GetX() - 25, player.GetY() - 25);
 			}
+
+
+
+			
+			
+			
+			healthLine.setSize(Vector2f{float(550*player.GetHP()/100), 100});
+			window.draw(healthLine);
+			scoreText.setString("Score: " + to_string(score));//задает строку тексту
+			scoreText.setPosition(10, 800);//задаем позицию текста, центр камеры
+			window.draw(scoreText);//рисую этот текст
+
 			window.display();
 
 
